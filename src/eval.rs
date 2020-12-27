@@ -27,7 +27,7 @@ pub fn eval(board: Board) -> f32 {
             Player::White => 1.0,
             Player::Black => -1.0
         };
-        let score = -turn * (10000.0 - (100 * board.ply()) as f32);
+        let score = -turn * (9999.0 - (100 * board.ply()) as f32);
         return score;
     }
 
