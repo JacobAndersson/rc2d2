@@ -24,7 +24,6 @@ pub fn nega_max(mut board: Board, depth: u8, color: i8, mut alpha: f32, beta: f3
             best_move = mv;
         }
 
-
         if score > alpha {
             alpha = score;
         }
