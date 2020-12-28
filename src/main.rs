@@ -6,11 +6,12 @@ mod eval;
 fn main() {
     let mut board = Board::from_fen("rnbqkbnr/ppp2ppp/4p3/3p4/2PP4/8/PP2PPPP/RNBQKBNR w KQkq - 0 3").unwrap();
     let mut color = 1;
+    println!("STARTED GAME");
     for _ in 0..20 {
-        println!("{}", board);
         let (score, mv) = search::nega_max(board.shallow_clone(), 4, color, -10000.0, 10000.0, eval::eval);
         color = -color;
         board.apply_move(mv);
-        println!("{}, {}", (color as f32) * score, mv);
+        println!("{}, {}", score, mv);
+        println!("{}", board);
     }
 }

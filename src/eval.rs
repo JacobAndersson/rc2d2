@@ -21,7 +21,7 @@ fn count_material(board: &Board) -> f32 {
     return material;
 }
 
-pub fn eval(board: Board) -> f32 {
+pub fn eval(board: &Board) -> f32 {
     if board.checkmate(){
         let turn: f32 = match &board.turn() {
             Player::White => 1.0,
@@ -35,9 +35,10 @@ pub fn eval(board: Board) -> f32 {
         return 0.0;
     }
 
-    let material = count_material(&board);
+    let material = count_material(board);
     let (middle, _) = board.psq().centipawns();
     let score = material + 0.05 * middle as f32;
+
     score
 }
 

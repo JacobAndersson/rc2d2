@@ -1,12 +1,13 @@
 use pleco::{Board, BitMove};
 
+
 #[path="./eval.rs"] mod eval;
 
-pub fn nega_max(mut board: Board, depth: u8, color: i8, mut alpha: f32, beta: f32, evaluator: fn(Board) -> f32) -> (f32, BitMove) {
+pub fn nega_max(mut board: Board, depth: u8, color: i8, mut alpha: f32, beta: f32, evaluator: fn(&Board) -> f32) -> (f32, BitMove) {
 
-    let moves = &board.generate_moves();
+    let mut moves = board.generate_moves();
     if depth == 0 || board.checkmate() || moves.is_empty(){
-        return ((color as f32)*evaluator(board), BitMove::null())
+        return (quiesce(board, color, alpha, beta, 5, evaluator), BitMove::null());
     } 
 
     let mut best_score: f32 = -9999.0;
@@ -15,11 +16,11 @@ pub fn nega_max(mut board: Board, depth: u8, color: i8, mut alpha: f32, beta: f3
     for mv in moves {
         board.apply_move(mv);
         let (mut score, _) = nega_max(board.shallow_clone(), depth - 1, -color, -beta, -alpha, evaluator);
-
         score = -score;
+
         board.undo_move();
 
-        if score >= best_score{
+        if score > best_score{
             best_score = score;
             best_move = mv;
         }
@@ -34,6 +35,38 @@ pub fn nega_max(mut board: Board, depth: u8, color: i8, mut alpha: f32, beta: f3
     }
 
     return (best_score, best_move);
+}
+
+
+fn quiesce(mut board: Board, color: i8, mut alpha: f32, beta: f32, depth: u8, evaluator: fn(&Board) -> f32) -> f32 {
+    let standpat = (color as f32)*evaluator(&board);
+    if depth == 0 {
+        return standpat;
+    }
+    if standpat >= beta {
+        return beta;
+    }
+    if alpha < standpat {
+        alpha = standpat;
+    } 
+
+    let moves = board.generate_moves();
+    for mv in moves {
+        if !board.is_capture(mv){
+            continue;
+        }
+        board.apply_move(mv);
+        let score = -quiesce(board.shallow_clone(), -color, -beta, -alpha, depth - 1, evaluator);
+        board.undo_move();
+        if score >= beta {
+            return beta;
+        }
+
+        if score > alpha {
+            alpha = score;
+        }
+    }
+    return alpha;
 }
 
 #[cfg(test)]
@@ -72,7 +105,8 @@ mod tests {
 
     #[test]
     fn mate_in_one_2(){
-        let mut board = Board::from_fen("1k6/8/8/8/8/3n4/6PR/6RK b Q - 0 1").unwrap();
+        let fen = "1k6/8/8/8/8/3n4/6PR/6RK b Q - 0 1";
+        let mut board = Board::from_fen(fen).unwrap();
         let color = -1;
         for depth in 1..4 {
             let (_, mv) = nega_max(board.shallow_clone(), depth, color, -9999.0, 9999.0, eval::eval);
