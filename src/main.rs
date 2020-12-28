@@ -4,7 +4,7 @@ mod search;
 mod eval;
 
 fn main() {
-    let mut board = Board::start_pos();
+    let mut board = Board::from_fen("rnbqkbnr/ppp2ppp/4p3/3p4/2PP4/8/PP2PPPP/RNBQKBNR w KQkq - 0 3").unwrap();
     let mut color = 1;
     for _ in 0..20 {
         println!("{}", board);

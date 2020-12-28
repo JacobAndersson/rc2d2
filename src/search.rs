@@ -1,5 +1,5 @@
-use std::cmp;
 use pleco::{Board, BitMove};
+
 #[path="./eval.rs"] mod eval;
 
 pub fn nega_max(mut board: Board, depth: u8, color: i8, mut alpha: f32, beta: f32, evaluator: fn(Board) -> f32) -> (f32, BitMove) {
