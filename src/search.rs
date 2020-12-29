@@ -87,7 +87,9 @@ fn quiesce(
 
     let moves = board.generate_moves();
     for mv in moves {
-        if !board.is_capture(mv) || standpat + eval::piece_values(board.piece_last_captured()) + 200.0 < alpha {
+        if !board.is_capture(mv)
+            || standpat + eval::piece_values(board.piece_last_captured()) + 200.0 < alpha
+        {
             continue;
         }
 
