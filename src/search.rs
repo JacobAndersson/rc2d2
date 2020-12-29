@@ -3,9 +3,22 @@ use pleco::{Board, BitMove};
 
 #[path="./eval.rs"] mod eval;
 
+fn move_value(mv: &BitMove, board: &Board) -> u32{
+    let mut score: u32 = 0;
+    if board.gives_check(*mv){
+        score += 50;
+    } else if board.is_capture(*mv){
+        score += 10;
+    } 
+    return score;
+}
+
+
 pub fn nega_max(mut board: Board, depth: u8, color: i8, mut alpha: f32, beta: f32, evaluator: fn(&Board) -> f32) -> (f32, BitMove) {
 
     let mut moves = board.generate_moves();
+    moves.sort_by(|a, b| move_value(a, &board).cmp(&move_value(b, &board)));
+
     if depth == 0 || board.checkmate() || moves.is_empty(){
         return (quiesce(board, color, alpha, beta, 5, evaluator), BitMove::null());
     } 
@@ -139,5 +152,19 @@ mod tests {
             board.apply_move(mv);
         }
         assert!(board.checkmate());
+    }
+
+    #[test]
+    fn mate_in_two_3(){
+        let mut board = Board::from_fen("r6k/6pp/p5r1/7R/5q2/3P3K/PPP1N1P1/2R1Q3 b - - 0 1").unwrap();
+        let mut color = -1;
+        for _i in 0..3{
+            let (_, mv) = nega_max(board.shallow_clone(), 4, color, -9999.0, 9999.0, eval::eval);
+            color = -color;
+            board.apply_move(mv);
+        }
+
+        assert!(board.checkmate());
+
     }
 }
