@@ -1,5 +1,4 @@
-use pleco::Board;
-use std::collections::HashMap;
+use pleco::{Board, Player, SQ};
 
 mod eval;
 mod search;

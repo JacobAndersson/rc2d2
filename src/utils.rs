@@ -1,5 +1,5 @@
 use crate::{eval, search};
-use pleco::{Board};
+use pleco::Board;
 use std::collections::HashMap;
 
 pub fn play_x_moves(
