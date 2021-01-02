@@ -86,7 +86,6 @@ fn attacking_defending(board: &Board) -> (f32, f32) {
         }
     }
 
-    println!("{}, {}", white_attackers, black_attackers);
     let attacking = white_attackers - black_attackers;
     let defending = white_defenders - black_defenders;
     return (attacking as f32, defending as f32);

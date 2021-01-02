@@ -22,6 +22,7 @@ pub fn play_x_moves(
             &mut tt,
             true,
             evaluator,
+            true
         );
         board.apply_move(mv);
         color = -color;
@@ -29,13 +30,14 @@ pub fn play_x_moves(
     return board;
 }
 
-pub fn play_match() {
+pub fn play_match(depth: u8) {
     let mut board = Board::start_pos();
     let mut color = 1;
     let mut count = 0;
     let mut black_tt: HashMap<u64, search::TransitionEntry> = HashMap::new();
     let mut white_tt: HashMap<u64, search::TransitionEntry> = HashMap::new();
     while !board.generate_moves().is_empty() {
+        println!("{}", board);
         count += 1;
         let transition_table = match color {
             1 => &mut white_tt,
@@ -44,20 +46,17 @@ pub fn play_match() {
         };
         let (score, mv) = search::nega_max(
             board.shallow_clone(),
-            4,
+            depth,
             color,
             -10000.0,
             10000.0,
             transition_table,
             true,
             eval::eval,
+            true
         );
         color = -color;
         let size = transition_table.keys().len();
         board.apply_move(mv);
-        println!(
-            "{}. {}, {}, transition table: {} \n{}\r",
-            count, mv, score, size, board
-        );
     }
 }
