@@ -21,7 +21,7 @@ pub fn play_x_moves(
             &mut tt,
             true,
             evaluator,
-            true
+            true,
         );
         board.apply_move(mv);
         color = -color;
@@ -52,7 +52,7 @@ pub fn play_match(depth: u8) {
             transition_table,
             true,
             eval::eval,
-            true
+            true,
         );
         color = -color;
         let size = transition_table.keys().len();
@@ -69,7 +69,7 @@ pub fn find_best_move(uci_moves: &str, depth: u8) -> String {
 
     let color = match board.turn() {
         Player::White => 1,
-        Player::Black => -1
+        Player::Black => -1,
     };
     let mut tt: HashMap<u64, search::TransitionEntry> = HashMap::new();
 
@@ -82,8 +82,8 @@ pub fn find_best_move(uci_moves: &str, depth: u8) -> String {
         &mut tt,
         true,
         eval::eval,
-        true
+        true,
     );
     println!("move: {}, score: {}", mv.stringify(), score);
     return mv.stringify();
-} 
+}

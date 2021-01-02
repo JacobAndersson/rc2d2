@@ -28,7 +28,6 @@ fn move_value(mv: &BitMove, board: &Board) -> u32 {
     return score;
 }
 
-
 pub fn nega_max(
     mut board: Board,
     depth: u8,
@@ -90,18 +89,32 @@ pub fn nega_max(
         );
     }
 
-
     //null move pruning
     //The apply_null_move and undo_null_move are unsafe operations
     unsafe {
         let curr_pl = match color {
             1 => Player::White,
             -1 => Player::Black,
-            _ => panic!("In valid color")
+            _ => panic!("In valid color"),
         };
-        if do_null && !board.in_check() && board.ply() > 0 && board.non_pawn_material(curr_pl) > 0 && depth > 3 {
+        if do_null
+            && !board.in_check()
+            && board.ply() > 0
+            && board.non_pawn_material(curr_pl) > 0
+            && depth > 3
+        {
             board.apply_null_move();
-            let (mut score, _) = nega_max(board.shallow_clone(), depth - 1 - R, -color, -beta, -beta + 1.0, transition_table, false, evaluator, false);
+            let (mut score, _) = nega_max(
+                board.shallow_clone(),
+                depth - 1 - R,
+                -color,
+                -beta,
+                -beta + 1.0,
+                transition_table,
+                false,
+                evaluator,
+                false,
+            );
             score = -score;
             board.undo_null_move();
 
@@ -110,7 +123,6 @@ pub fn nega_max(
             }
         }
     }
-
 
     let mut best_score: f32 = -9999.0;
     let mut best_move: BitMove = BitMove::null();
@@ -126,7 +138,7 @@ pub fn nega_max(
             transition_table,
             false,
             evaluator,
-            true
+            true,
         );
         score = -score;
 
@@ -226,7 +238,17 @@ mod tests {
         let board = Board::from_fen(fen).unwrap();
         let mut tt: HashMap<u64, TransitionEntry> = HashMap::new();
 
-        let (_, mv) = nega_max(board, 4, 1, -9999.0, 9999.0, &mut tt, true, eval::eval, true);
+        let (_, mv) = nega_max(
+            board,
+            4,
+            1,
+            -9999.0,
+            9999.0,
+            &mut tt,
+            true,
+            eval::eval,
+            true,
+        );
         assert_eq!(
             mv.stringify(),
             "g4g5",
@@ -242,7 +264,17 @@ mod tests {
             Board::from_fen("rnb1kbnr/pppp1ppp/8/4p1q1/4P1Q1/8/PPPP1PPP/RNB1KBNR w KQkq - 2 3")
                 .unwrap();
         let mut tt: HashMap<u64, TransitionEntry> = HashMap::new();
-        let (score, mv) = nega_max(board, 4, -1, -9999.0, 9999.0, &mut tt, true, eval::eval, true);
+        let (score, mv) = nega_max(
+            board,
+            4,
+            -1,
+            -9999.0,
+            9999.0,
+            &mut tt,
+            true,
+            eval::eval,
+            true,
+        );
         assert_ne!(mv.stringify(), "g4g5");
         assert_ne!(score, 0.0);
     }
@@ -262,7 +294,7 @@ mod tests {
                 &mut tt,
                 true,
                 eval::eval,
-                true
+                true,
             );
             board.apply_move(mv);
             assert!(
@@ -292,7 +324,7 @@ mod tests {
                 &mut tt,
                 true,
                 eval::eval,
-                true
+                true,
             );
             board.apply_move(mv);
             assert!(
@@ -339,7 +371,7 @@ mod tests {
                 &mut tt,
                 true,
                 eval::eval,
-                true
+                true,
             );
             color = -color;
             board.apply_move(mv);
