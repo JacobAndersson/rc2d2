@@ -1,7 +1,6 @@
 use crate::{eval, search};
-use pleco::Board;
+use pleco::{Board, Player};
 use std::collections::HashMap;
-
 pub fn play_x_moves(
     mut board: Board,
     num_moves: u8,
@@ -60,3 +59,31 @@ pub fn play_match(depth: u8) {
         board.apply_move(mv);
     }
 }
+
+pub fn find_best_move(uci_moves: &str, depth: u8) -> String {
+    let moves: Vec<&str> = uci_moves.split(" ").collect();
+    let mut board = Board::start_pos();
+    for mv in moves {
+        board.apply_uci_move(mv);
+    }
+
+    let color = match board.turn() {
+        Player::White => 1,
+        Player::Black => -1
+    };
+    let mut tt: HashMap<u64, search::TransitionEntry> = HashMap::new();
+
+    let (score, mv) = search::nega_max(
+        board.shallow_clone(),
+        depth,
+        color,
+        -9999.0,
+        9999.0,
+        &mut tt,
+        true,
+        eval::eval,
+        true
+    );
+    println!("move: {}, score: {}", mv.stringify(), score);
+    return mv.stringify();
+} 

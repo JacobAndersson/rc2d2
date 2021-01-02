@@ -112,10 +112,10 @@ pub fn eval(board: &Board) -> f32 {
     let (attacking, defending) = attacking_defending(board);
     let score = material
         + 0.01 * middle as f32
-        + 20.0 * king_safety
+        + 50.0 * king_safety
         + 50.0 * pinned
-        + 20.0 * attacking
-        + 20.0 * defending;
+        + 50.0 * attacking
+        + 50.0 * defending;
 
     return score;
 }
