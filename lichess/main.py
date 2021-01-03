@@ -4,7 +4,7 @@ from game_client import Game
 
 token = os.getenv('API_TOKEN')
 bot_id = os.getenv('BOT_ID')
-DEPTH =  4
+DEPTH = 4
 
 session = berserk.TokenSession(token)
 client = berserk.Client(session)

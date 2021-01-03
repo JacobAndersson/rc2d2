@@ -1,4 +1,4 @@
-use pleco::{BitMove, Board, MoveList, Player};
+use pleco::{BitMove, Board, Player};
 use std::collections::HashMap;
 
 use crate::eval;
@@ -80,11 +80,10 @@ pub fn nega_max(
         None => {}
     };
 
-    let mut moves = board.generate_moves();
     moves.sort_by(|a, b| move_value(b, &board).cmp(&move_value(a, &board)));
     if depth == 0 || board.checkmate() || moves.is_empty() {
         return (
-            quiesce(board, color, alpha, beta, 5, evaluator),
+            quiesce(board, color, alpha, beta, 10, evaluator),
             BitMove::null(),
         );
     }

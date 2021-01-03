@@ -72,7 +72,7 @@ fn attacking_defending(board: &Board) -> (f32, f32) {
 
     let pieces = board.get_piece_locations();
     for (sq, pt) in pieces {
-        let (player, piece) = match pt.player_piece() {
+        let (player, _piece) = match pt.player_piece() {
             Some(x) => x,
             None => panic!("INVALID PIECETYPE"),
         };
@@ -91,6 +91,17 @@ fn attacking_defending(board: &Board) -> (f32, f32) {
     return (attacking as f32, defending as f32);
 }
 
+fn num_big_pieces(board: &Board) -> u8{
+    let pieces = board.occupied();
+    let white_pawn = board.piece_bb(Player::White, PieceType::P);
+    let black_pawn = board.piece_bb(Player::Black, PieceType::P);
+    //let white_king = board.king_sq(Player::White).to_bb();
+    //let black_king = board.king_sq(Player::Black).to_bb();
+    let big_pieces = pieces&!white_pawn&!black_pawn;//&!white_king&!black_king;
+    let num = big_pieces.count_bits();
+    return num; 
+}
+
 pub fn eval(board: &Board) -> f32 {
     if board.checkmate() {
         let turn: f32 = match &board.turn() {
@@ -106,14 +117,20 @@ pub fn eval(board: &Board) -> f32 {
     }
 
     let material = count_material(board);
-    let (middle, _) = board.psq().centipawns();
+    let (middle, end) = board.psq().centipawns();
     let king_safety = king_safety(board);
     let pinned = pinned_pieces(board);
     let (attacking, defending) = attacking_defending(board);
+
+    let mut psq = middle;
+    if num_big_pieces(board) < 8 {
+        psq = end;
+    }
+
     let score = material
-        + 0.01 * middle as f32
-        + 50.0 * king_safety
-        + 50.0 * pinned
+        + 0.01 * psq as f32
+        + 20.0 * king_safety
+        + 40.0 * pinned
         + 50.0 * attacking
         + 50.0 * defending;
 

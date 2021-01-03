@@ -2,6 +2,7 @@ extern crate cpython;
 use cpython::{py_fn, py_module_initializer, PyResult, Python};
 mod eval;
 mod search;
+#[allow(unused)]
 mod utils;
 
 py_module_initializer!(rc2d2, |py, m| {

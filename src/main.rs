@@ -1,7 +1,6 @@
-use pleco::{Board, Player, SQ};
-
 mod eval;
 mod search;
+#[allow(unused)]
 mod utils;
 
 fn main() {
