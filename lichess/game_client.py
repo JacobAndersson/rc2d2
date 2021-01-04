@@ -18,11 +18,9 @@ class Game(threading.Thread):
     def run(self):
         if self.current_state:
             try:
-                is_white = self.current_state['white']['id'] == self.bot_id
+                self.is_white = self.current_state['white']['id'] == self.bot_id
             except KeyError:
-                is_white = False
-
-            self.is_white = is_white
+                self.is_white = False
 
             state = self.current_state['state']
             self.handle_state_change(state)
@@ -37,10 +35,9 @@ class Game(threading.Thread):
     
     def handle_state_change(self, game_state):
         all_moves = game_state['moves']
-
         num_moves = len(all_moves.split(' '))
-        white_turns = num_moves % 2 == 0
-        if (white_turns == self.is_white):
+        whites_turn = num_moves % 2 == 0
+        if whites_turn == self.is_white or (self.is_white and len(all_moves) == 0):
             move = rc2d2.find_best_move(all_moves, self.depth)
             try: 
                 self.client.bots.make_move(self.game_id, move)

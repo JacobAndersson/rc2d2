@@ -347,35 +347,17 @@ mod tests {
 
     #[test]
     fn mate_in_two_2() {
-        let mut board = Board::from_fen("k7/4R3/2p5/p7/1p6/2P1R2P/1P4P1/3K4 w - - 0 1").unwrap();
-        let mut color = 1;
+        let board = Board::from_fen("k7/4R3/2p5/p7/1p6/2P1R2P/1P4P1/3K4 w - - 0 1").unwrap();
+        let color = 1;
         let board = utils::play_x_moves(board, 3, 4, color, eval::eval);
         assert!(board.checkmate());
     }
 
     #[test]
     fn mate_in_two_3() {
-        let mut board =
-            Board::from_fen("r6k/6pp/p5r1/7R/5q2/3P3K/PPP1N1P1/2R1Q3 b - - 0 1").unwrap();
-        let mut tt: HashMap<u64, TransitionEntry> = HashMap::new();
-
-        let mut color = -1;
-        for _i in 0..3 {
-            let (_, mv) = nega_max(
-                board.shallow_clone(),
-                4,
-                color,
-                -9999.0,
-                9999.0,
-                &mut tt,
-                true,
-                eval::eval,
-                true,
-            );
-            color = -color;
-            board.apply_move(mv);
-        }
-
+        let board = Board::from_fen("r6k/6pp/p5r1/7R/5q2/3P3K/PPP1N1P1/2R1Q3 b - - 0 1").unwrap();
+        let color = -1;
+        let board = utils::play_x_moves(board, 3, 4, color, eval::eval);
         assert!(board.checkmate());
     }
 }

@@ -63,10 +63,9 @@ pub fn play_match(depth: u8) {
 pub fn find_best_move(uci_moves: &str, depth: u8) -> String {
     let moves: Vec<&str> = uci_moves.split(" ").collect();
     let mut board = Board::start_pos();
-    if !moves.is_empty() {
-        for mv in moves {
-            board.apply_uci_move(mv);
-        }
+    let num_moves = moves.len();
+    for mv in moves {
+        board.apply_uci_move(mv);
     }
 
     let color = match board.turn() {
@@ -86,6 +85,6 @@ pub fn find_best_move(uci_moves: &str, depth: u8) -> String {
         eval::eval,
         true,
     );
-    println!("move: {}, score: {}", mv.stringify(), score);
+    println!("{}. move: {}, score: {}", num_moves + 1, mv.stringify(), score);
     return mv.stringify();
 }

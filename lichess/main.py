@@ -1,10 +1,14 @@
 import os
 import berserk
 from game_client import Game
+import argparse
+parser = argparse.ArgumentParser(description="Client for rc2d2")
+parser.add_argument("--depth", default=4, help="Sets the search depth")
+args = parser.parse_args() 
 
 token = os.getenv('API_TOKEN')
 bot_id = os.getenv('BOT_ID')
-DEPTH = 4
+DEPTH = int(args.depth)
 
 session = berserk.TokenSession(token)
 client = berserk.Client(session)

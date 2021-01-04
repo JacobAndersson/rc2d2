@@ -91,15 +91,15 @@ fn attacking_defending(board: &Board) -> (f32, f32) {
     return (attacking as f32, defending as f32);
 }
 
-fn num_big_pieces(board: &Board) -> u8{
+fn num_big_pieces(board: &Board) -> u8 {
     let pieces = board.occupied();
     let white_pawn = board.piece_bb(Player::White, PieceType::P);
     let black_pawn = board.piece_bb(Player::Black, PieceType::P);
     //let white_king = board.king_sq(Player::White).to_bb();
     //let black_king = board.king_sq(Player::Black).to_bb();
-    let big_pieces = pieces&!white_pawn&!black_pawn;//&!white_king&!black_king;
+    let big_pieces = pieces & !white_pawn & !black_pawn; //&!white_king&!black_king;
     let num = big_pieces.count_bits();
-    return num; 
+    return num;
 }
 
 pub fn eval(board: &Board) -> f32 {
